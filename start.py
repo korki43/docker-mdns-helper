@@ -29,7 +29,9 @@ from docker_domains import DockerDomains
 
 
 # Default Time-to-Live for mDNS records, in seconds...
-DEFAULT_DNS_TTL = 5 * 60
+DEFAULT_DNS_TTL = 2 * 60
+# Default time do wait between domain checks
+DEFAULT_PAUSE_TIME = 5
 
 def handle_signals(publisher, signum, frame):
     """Unpublish all mDNS records and exit cleanly."""
@@ -51,12 +53,14 @@ def main():
     parser.add_argument('-d', '--disable', help='All detected CNAMES are not published if not indicated.',action='store_true')
     parser.add_argument('-r', '--reset', help='Reset publishing if a CNAME is removed', action='store_true')
     parser.add_argument('-t', '--ttl', help='Set the TTL for all published CNAME records.', nargs=1, default=DEFAULT_DNS_TTL, metavar='<ttl>')
+    parser.add_argument('-w', '--wait', help='Set the time to wait between new domain checks.', nargs=1, default=DEFAULT_PAUSE_TIME, metavar='<wait>')
     parser.add_argument('-v', '--verbose', help='Produce extra output for debugging purposes.', action='store_true')
     parser.add_argument('-f', '--force', help='Publish all CNAMEs without checking if they are already being published elsewhere on the network. This is much faster, but generally unsafe.', action='store_true')
     parser.add_argument("cnames", help="List of cnames <hostname.local> to publish in addition to docker", nargs='*')
 
     res = parser.parse_args(sys.argv[1:])
     ttl = int(res.ttl)
+    wait = int(res.wait)
     force = res.force
     verbose = res.verbose
     log = res.log
@@ -135,7 +139,7 @@ def main():
                 logging.warning("%d out of %d CNAMEs published", publisher.count(), len(docker_domains))
 
         # CNAMEs will exist until we renew it within the TTL duration
-        sleep(ttl / 2)
+        sleep(wait)
 
 
 if __name__ == "__main__":
