@@ -29,7 +29,7 @@ from docker_domains import DockerDomains
 
 
 # Default Time-to-Live for mDNS records, in seconds...
-DEFAULT_DNS_TTL = 60
+DEFAULT_DNS_TTL = 5 * 60
 
 def handle_signals(publisher, signum, frame):
     """Unpublish all mDNS records and exit cleanly."""
@@ -135,7 +135,7 @@ def main():
                 logging.warning("%d out of %d CNAMEs published", publisher.count(), len(docker_domains))
 
         # CNAMEs will exist until we renew it within the TTL duration
-        sleep(1)
+        sleep(ttl / 2)
 
 
 if __name__ == "__main__":
