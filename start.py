@@ -48,12 +48,12 @@ def handle_signals(publisher, signum, frame):
 
 def main():
     parser = ArgumentParser( description="Helper container which updates Dashy configuration based on Docker or Traefik configuration")
-    parser.add_argument('-l', '--log', help='Send log messages into the specified file.', nargs=1, metavar='<filename>')
+    parser.add_argument('-l', '--log', help='Send log messages into the specified file.', metavar='<filename>')
     parser.add_argument('-D', '--daemon', help='Lauch as a daemon.',action='store_true')
     parser.add_argument('-d', '--disable', help='All detected CNAMES are not published if not indicated.',action='store_true')
     parser.add_argument('-r', '--reset', help='Reset publishing if a CNAME is removed', action='store_true')
-    parser.add_argument('-t', '--ttl', help='Set the TTL for all published CNAME records.', nargs=1, default=DEFAULT_DNS_TTL, metavar='<ttl>')
-    parser.add_argument('-w', '--wait', help='Set the time to wait between new domain checks.', nargs=1, default=DEFAULT_PAUSE_TIME, metavar='<wait>')
+    parser.add_argument('-t', '--ttl', help='Set the TTL for all published CNAME records.', default=DEFAULT_DNS_TTL, metavar='<ttl>')
+    parser.add_argument('-w', '--wait', help='Set the time to wait between new domain checks.', default=DEFAULT_PAUSE_TIME, metavar='<wait>')
     parser.add_argument('-v', '--verbose', help='Produce extra output for debugging purposes.', action='store_true')
     parser.add_argument('-f', '--force', help='Publish all CNAMEs without checking if they are already being published elsewhere on the network. This is much faster, but generally unsafe.', action='store_true')
     parser.add_argument("cnames", help="List of cnames <hostname.local> to publish in addition to docker", nargs='*')
